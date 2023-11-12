@@ -15,7 +15,7 @@ jobs:
       - name: Extract Version from csproj
         id: extract_version
         run: |
-          version=$(grep -oP '(?<=<AppVersion>).*?(?=</AppVersion>)' Duckify.csproj)
+          version=$(grep -oP '(?<=<AppVersion>).*?(?=</AppVersion>)' YT2PAD.csproj)
           echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Set up .NET
@@ -25,22 +25,22 @@ jobs:
 
       - name: Build and Test
         run: |
-          dotnet build Duckify.csproj -c Release
-          dotnet test Duckify.csproj -c Release
-          dotnet publish Duckify.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true --output ./publish-output/win-x64
+          dotnet build YT2PAD.csproj -c Release
+          dotnet test YT2PAD.csproj -c Release
+          dotnet publish YT2PAD.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true --output ./publish-output/win-x64
         env:
           DOTNET_CLI_TELEMETRY_OPTOUT: true
 
       - name: Rename Artifacts
         run: |
-          mv ./publish-output/win-x64/Duckify.exe ./publish-output/win-x64/Duckify-x64-win-${{ steps.extract_version.outputs.version }}.exe
+          mv ./publish-output/win-x64/YT2PAD.exe ./publish-output/win-x64/YT2PAD-x64-win-${{ steps.extract_version.outputs.version }}.exe
         shell: bash
 
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
           artifacts: |
-            ./publish-output/win-x64/Duckify-x64-win-${{ steps.extract_version.outputs.version }}.exe
+            ./publish-output/win-x64/YT2PAD-x64-win-${{ steps.extract_version.outputs.version }}.exe
           tag: ${{ steps.extract_version.outputs.version }}
           name: Release v${{ steps.extract_version.outputs.version }}
           draft: false
