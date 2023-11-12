@@ -1,0 +1,47 @@
+name: Automation
+
+on:
+  push:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Extract Version from csproj
+        id: extract_version
+        run: |
+          version=$(grep -oP '(?<=<AppVersion>).*?(?=</AppVersion>)' Duckify.csproj)
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '6.0.x'  # Use the version you need
+
+      - name: Build and Test
+        run: |
+          dotnet build Duckify.csproj -c Release
+          dotnet test Duckify.csproj -c Release
+          dotnet publish Duckify.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true --output ./publish-output/win-x64
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+      - name: Rename Artifacts
+        run: |
+          mv ./publish-output/win-x64/Duckify.exe ./publish-output/win-x64/Duckify-x64-win-${{ steps.extract_version.outputs.version }}.exe
+        shell: bash
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: |
+            ./publish-output/win-x64/Duckify-x64-win-${{ steps.extract_version.outputs.version }}.exe
+          tag: ${{ steps.extract_version.outputs.version }}
+          name: Release v${{ steps.extract_version.outputs.version }}
+          draft: false
+          prerelease: false
