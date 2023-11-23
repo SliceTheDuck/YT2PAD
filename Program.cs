@@ -23,7 +23,7 @@ namespace YT2PAD
                 {
                     Environment.Exit(0);
                 }
-                if(!url.StartsWith("https://www.youtube.com/")&&!url.StartsWith("https://youtu.be/")&&!url.StartsWith("https://youtube.com/)
+                if(!url.StartsWith("https://www.youtube.com/")&&!url.StartsWith("https://youtu.be/")&&!url.StartsWith("https://youtube.com/"))
                 {
                     Console.WriteLine("Not a youtube link.");
                     continue;
