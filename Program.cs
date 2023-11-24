@@ -23,7 +23,7 @@ namespace YT2PAD
                 {
                     Environment.Exit(0);
                 }
-                if(!url.StartsWith("https://www.youtube.com/")&&!url.StartsWith("https://youtu.be/"))
+                if(!url.StartsWith("https://www.youtube.com/")&&!url.StartsWith("https://youtu.be/")&&!url.StartsWith("https://youtube.com/"))
                 {
                     Console.WriteLine("Not a youtube link.");
                     continue;
@@ -57,17 +57,26 @@ namespace YT2PAD
             await Soundpad.ConnectAsync();
             var temp = await Soundpad.GetCategories();
             var searchlist = temp.Value.Categories;
-            bool exists=false;
+            bool plexists=false;
+            bool soexists=false;
             foreach(Category cg in searchlist)
             {
                 if(cg.Name.ToLower()=="yt2pad-playlists")
                 {
-                    exists=true;
+                    plexists=true;
+                }
+                if(cg.Name.ToLower()=="yt2pad-audio")
+                {
+                    soexists=true;
                 }
             }
-            if(!exists)
+            if(!plexists)
             {
                 await Soundpad.AddCategory("yt2pad-playlists", -1);
+            }
+            if(!soexists)
+            {
+                await Soundpad.AddCategory("yt2pad-audio", -1);
             }
             Console.WriteLine("Startup done\n");
         }
@@ -119,7 +128,7 @@ namespace YT2PAD
             var OutputFolder = AppData + "\\Playlists\\"+Playlist;
             ytdl.OutputFolder = OutputFolder;
             if(Directory.Exists(OutputFolder)){
-                Console.WriteLine("Playlist already exists\nTo redownload it, delete the existing folder in Appdata");
+                Console.WriteLine("Playlist already exists\nTo redownload it, delete the existing folder in Appdata: "+OutputFolder);
                 return;
             }
             var temp = await Soundpad.GetCategories();
