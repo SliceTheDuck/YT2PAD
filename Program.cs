@@ -158,6 +158,7 @@ namespace YT2PAD
                 }else if(SawPlaylists)
                 {
                     target=cg.Index-1;
+                    break;
                 }
             }
             
