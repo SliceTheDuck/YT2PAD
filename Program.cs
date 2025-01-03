@@ -130,8 +130,6 @@ namespace YT2PAD
             if(Directory.Exists(OutputFolder)){
                 Console.WriteLine("Playlist already exists\nTo redownload it, delete the existing folder in Appdata: "+OutputFolder);
                 return;
-            }else{
-                Directory.Create(OutputFolder);
             }
             var temp = await Soundpad.GetCategories();
             var searchlist = temp.Value.Categories;
